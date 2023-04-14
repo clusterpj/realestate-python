@@ -1,0 +1,28 @@
+[
+    {
+      "title": "Spacious 3 Bedroom House",
+      "description": "A beautiful house located in a quiet neighborhood...",
+      "price": 350000,
+      "address": {
+        "street": "123 Main St",
+        "city": "New York",
+        "state": "NY",
+        "postal_code": "10001",
+        "country": "USA"
+      },
+      "property_type": "house",
+      "status": "for_sale",
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "area": 2000,
+      "amenities": ["garage", "garden", "central_air"],
+      "agent_id": "ObjectId_of_the_agent",
+      "images": [
+        "image1.jpg",
+        "image2.jpg"
+      ],
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
+    }
+  ]
+  

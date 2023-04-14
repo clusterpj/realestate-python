@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+        <title>Real Estate App</title>
+      </head>
+<body>
+
+<!-- Header -->
+<header class="py-3 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="text-primary">{{ title }}</h1>
+            <nav class="d-flex align-items-center">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('news') }}">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                    </li>
+                </ul>
+                <div class="ms-4">
+                    <a class="btn btn-primary" href="{{ url_for('login') }}">Login</a>
+                    <a class="btn btn-secondary" href="{{ url_for('signup') }}">Sign Up</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+
+<!-- Main content -->
+{% block content %}
+{% endblock %}
+
+<!-- Footer -->
+<footer class="bg-light py-3 mt-auto">
+    <div class="container">
+        <p class="text-center mb-0">Copyright &copy; Real Estate 2023. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+</body>
+</html>

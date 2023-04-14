@@ -1,0 +1,30 @@
+/* styles.css */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #007bff;
+  }
+  
+  .header .brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .header .nav-item {
+    margin-left: 10px;
+  }
+  
+  .header .nav-link {
+    color: #007bff;
+  }
+  
+  .header .nav-link:hover {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  
