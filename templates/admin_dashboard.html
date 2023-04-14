@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">
+                    Dashboard
+                </a>
+                <div class="list-group-item list-group-item-action">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" href="#" role="button" id="propertiesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Properties
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="propertiesDropdown">
+                            <a class="dropdown-item" href="{{ url_for('all_properties') }}">All properties</a>
+                            <a class="dropdown-item" href="{{ url_for('property_types') }}">Type</a>
+                            <a class="dropdown-item" href="{{ url_for('property_amenities') }}">Amenities</a>
+                            <a class="dropdown-item" href="{{ url_for('property_locations') }}">Location</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome to the admin dashboard. Here, you can manage the content and properties of your website.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

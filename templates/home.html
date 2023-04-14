@@ -1,5 +1,36 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <!-- Your home page content goes here -->
+<div class="container">
+  <!-- Hero section -->
+  <section class="hero">
+    <div class="container text-center">
+      <h1 class="display-4">Welcome to Real Estate</h1>
+      <p class="lead">Find your dream home today</p>
+      <a href="{{ url_for('listings') }}" class="btn btn-primary">View Listings</a>
+    </div>
+  </section>
+  
+
+  <!-- Featured listings section -->
+  <section class="featured-listings my-5">
+    <h2 class="mb-4">Featured Listings</h2>
+    <div class="row">
+      <!-- Add featured listings cards here -->
+    </div>
+  </section>
+
+  <!-- Call-to-action section -->
+  <section class="cta my-5">
+    <div class="row">
+      <div class="col-md-9">
+        <h3 class="mb-0">Ready to find your new home?</h3>
+        <p class="lead mb-0">Sign up now to start your search!</p>
+      </div>
+      <div class="col-md-3 d-flex align-items-center">
+        <a class="btn btn-primary w-100" href="{{ url_for('signup') }}">Sign Up</a>
+      </div>
+    </div>
+  </section>
+</div>
 {% endblock %}

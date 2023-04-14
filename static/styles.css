@@ -27,4 +27,33 @@
     color: #0056b3;
     text-decoration: none;
   }
+
+ /* Hero section */
+.hero {
+  min-height: 400px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/static/images/villaonthebeach.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 0 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.display-4 {
+  font-weight: 800;
+}
+
+/* Featured listings section */
+.featured-listings .card {
+  margin-bottom: 30px;
+}
+
+/* Call-to-action section */
+.cta {
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: 5px;
+}
   

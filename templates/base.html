@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    
-        <title>Real Estate App</title>
-      </head>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <title>Real Estate App</title>
+</head>
 <body>
 
 <!-- Header -->
@@ -35,19 +35,29 @@
                         <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
                     </li>
                 </ul>
+                {% if current_user.is_authenticated %}
+                <div class="ms-4">
+                    <span>Welcome, {{ current_user.username }}!</span>
+                    <a class="btn btn-danger" href="{{ url_for('logout') }}">Logout</a>
+                </div>
+                {% else %}
                 <div class="ms-4">
                     <a class="btn btn-primary" href="{{ url_for('login') }}">Login</a>
                     <a class="btn btn-secondary" href="{{ url_for('signup') }}">Sign Up</a>
                 </div>
+                {% endif %}
             </nav>
         </div>
     </div>
 </header>
 
-
 <!-- Main content -->
-{% block content %}
-{% endblock %}
+<main>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</main>
 
 <!-- Footer -->
 <footer class="bg-light py-3 mt-auto">
