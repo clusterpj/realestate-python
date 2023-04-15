@@ -11,7 +11,26 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" crossorigin="anonymous" />
+
     <title>Real Estate App</title>
+
+    <style>
+        html,
+        body {
+          height: 100%;
+        }
+      
+        body {
+          display: flex;
+          flex-direction: column;
+        }
+      
+        main {
+          flex: 1;
+        }
+      </style>
 </head>
 <body>
 
@@ -60,11 +79,39 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-light py-3 mt-auto">
+<footer class="bg-dark text-white py-4 mt-auto">
     <div class="container">
-        <p class="text-center mb-0">Copyright &copy; Real Estate 2023. All rights reserved.</p>
+      <div class="row">
+        <!-- Column 1 -->
+        <div class="col-md-4">
+          <h5>Column 1</h5>
+          <p>Some description or content for Column 1.</p>
+        </div>
+  
+        <!-- Column 2 -->
+        <div class="col-md-4">
+          <h5>Column 2</h5>
+          <p>Some description or content for Column 2.</p>
+        </div>
+  
+        <!-- Column 3 -->
+        <div class="col-md-4">
+          <h5>Connect with Us</h5>
+          <p>Stay connected with us on social media:</p>
+          <a href="https://www.facebook.com" class="text-white me-3" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.linkedin.com" class="text-white me-3" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="https://www.instagram.com" class="text-white" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
     </div>
-</footer>
+  </footer>
+  
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>

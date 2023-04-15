@@ -56,4 +56,10 @@
   padding: 30px;
   border-radius: 5px;
 }
+
+.contactSlider {
+  display: flex;
+  align-items: center;
+  
+}
   

@@ -6,6 +6,13 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from flask_login import logout_user
+from werkzeug.utils import secure_filename
+import os
+UPLOAD_FOLDER = 'static/uploads/'
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
 
 app = Flask(__name__)
 app.secret_key = "dTLma3M6KkGrDf"
@@ -135,6 +142,38 @@ def property_amenities():
 def property_locations():
     # Fetch all property locations and render the property_locations page
     return render_template('admin/property_locations.html')
+
+@app.route('/admin/create_property', methods=['GET', 'POST'])
+@login_required
+def create_property():
+    if request.method == 'POST':
+        # Get form data
+        title = request.form['title']
+        image = request.files['image']
+        price = float(request.form['price'])
+        bedrooms = int(request.form['bedrooms'])
+        bathrooms = int(request.form['bathrooms'])
+        size = int(request.form['size'])
+
+        # Save image to a folder (e.g., 'static/uploads/')
+        image_filename = secure_filename(image.filename)
+        image.save(os.path.join('static/uploads/', image_filename))
+
+        # Add the listing to the database
+        mongo.db.listings.insert_one({
+            'title': title,
+            'image': url_for('static', filename='uploads/' + image_filename),
+            'price': price,
+            'bedrooms': bedrooms,
+            'bathrooms': bathrooms,
+            'size': size
+        })
+
+        flash('Listing added successfully', 'success')
+        return redirect(url_for('all_properties'))
+
+    return render_template('admin/create_property.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
