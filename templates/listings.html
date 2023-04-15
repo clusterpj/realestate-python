@@ -11,7 +11,10 @@
             <div class="card-body">
               <h5 class="card-title">{{ listing.title }}</h5>
               <p class="card-text">Price: ${{ listing.price }}</p>
-              <p class="card-text">Bedrooms: {{ listing.bedrooms }} | Bathrooms: {{ listing.bathrooms }}</p>
+              <p class="card-text">
+                <i class="fas fa-bed"></i> {{ listing.bedrooms }}
+                <i class="fas fa-bath"></i> {{ listing.bathrooms }}
+              </p>
               <p class="card-text">Size: {{ listing.size }} sqm</p>
               <a href="{{ url_for('listing_details', listing_id=listing._id) }}" class="btn btn-primary">View Details</a>
             </div>

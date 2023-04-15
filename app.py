@@ -44,9 +44,18 @@ def home():
 
 @app.route('/listings')
 def listings():
-    # Code to fetch data and render the listings page
-    listings = mongo.db.listings.find()
-    return render_template('listings.html', listings=listings, title='Real Estate App')
+    # Fetch listings from the database
+    listings_cursor = mongo.db.listings.find()
+
+    # Convert the cursor to a list of dictionaries
+    listings = [listing for listing in listings_cursor]
+
+    # Format the price and size of each listing
+    for listing in listings:
+        listing['price'] = format_number(listing['price'])
+        listing['size'] = format_number(listing['size'])
+
+    return render_template('listings.html', listings=listings)
 
 @app.route('/listings/<listing_id>')
 def listing_details(listing_id):
@@ -173,6 +182,10 @@ def create_property():
         return redirect(url_for('all_properties'))
 
     return render_template('admin/create_property.html')
+
+def format_number(value):
+    return "{:,}".format(value)
+
 
 
 if __name__ == '__main__':

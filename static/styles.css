@@ -60,6 +60,38 @@
 .contactSlider {
   display: flex;
   align-items: center;
-  
+
 }
+
+.card img:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-title {
+  font-weight: bold;
+  color: #0056b3; /* Change this value to the color you want */
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+  -webkit-transition: transform 0.3s;
+  -moz-transition: transform 0.3s;
+  -o-transition: transform 0.3s;
+  transition: transform 0.3s;
+}
+
+.card-img-top:hover {
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+
+
+
+
   
