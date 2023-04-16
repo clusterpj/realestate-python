@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Real Estate App</title>
+
   </head>
   <body>
     <h1>Real Estate App</h1>
@@ -30,7 +30,7 @@
     <h2>Contributing</h2>
     <p>Contributions to this project are welcome. If you would like to contribute, please fork the repository and submit a pull request with your changes.</p>
     <h2>Credits</h2>
-    <p>This app was built by John Smith. It uses the Flask web framework, MongoDB database, and Bootstrap front-end framework.</p>
+    <p>This app was built by Pedro Jimenez. It uses the Flask web framework, MongoDB database, and Bootstrap front-end framework.</p>
     <h2>License</h2>
     <p>This project is licensed under the MIT License - see the LICENSE file for details.</p>
   </body>
