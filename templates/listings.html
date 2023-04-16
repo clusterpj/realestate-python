@@ -16,7 +16,7 @@
         <!-- Real Estate Listing Card -->
         <div class="col-md-4 col-sm-6 col-xs-12 my-3">
           <div class="card">
-            <img src="{{ url_for('static', filename=listing.image|replace('static/', '')) }}" alt="Main image">
+            <img src="{{ url_for('static', filename=listing.image) }}" alt="Main image">
             <div class="card-body">
               <h5 class="card-title">{{ listing.title }}</h5>
               <p class="card-text">Price: ${{ listing.price }}</p>

@@ -10,9 +10,10 @@ from werkzeug.security import generate_password_hash
 from flask_login import logout_user
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
-from flask_mail import Mail, Message
+from flask_mail import Message
 from config import Config
 import os
+import pdb
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -224,13 +225,13 @@ def create_property():
 
 
         # Save the main image
-        image_filename = secure_filename(image.filename)
+        image_filename = secure_filename(image.filename).replace('\\', '/')
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
 
         # Create the new listing
         new_listing = Listing(
             title,
-            os.path.join('uploads', image_filename),
+            'uploads/' + image_filename,
             float(price),
             int(bedrooms),
             float(bathrooms),
