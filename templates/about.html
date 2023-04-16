@@ -1,5 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <!-- Your home page content goes here -->
+  <div class="container mt-5">
+    <h1>About Us</h1>
+    <hr>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <img src="{{ url_for('static', filename='img/mabel-and-pedro.jpg') }}" class="img-fluid mb-3" alt="Mabel and Pedro">
+      </div>
+      <div class="col-md-6">
+        <h2>Mabel and Pedro</h2>
+        <p class="lead">Real Estate Agents</p>
+        <p>We are a team of experienced real estate agents based on the North Coast of the Dominican Republic. We are dedicated to helping our clients buy, sell, and rent properties in this beautiful part of the world.</p>
+        <p>With years of experience and a deep knowledge of the local market, we are committed to providing our clients with exceptional service and guidance throughout the entire real estate process. Whether you are looking for your dream home, a vacation property, or an investment opportunity, we are here to help.</p>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <h3>Our Services</h3>
+        <ul>
+          <li>Property buying and selling</li>
+          <li>Property rentals</li>
+          <li>Property management</li>
+          <li>Real estate investment consulting</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h3>Contact Us</h3>
+        <p>Feel free to reach out to us with any questions or to schedule a consultation.</p>
+        <ul>
+          <li>Email: <a href="mailto:mabelandpedro@example.com">mabelandpedro@example.com</a></li>
+          <li>Phone: 555-555-5555</li>
+          <li>Address: 123 Main Street, Sosua, Dominican Republic</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 {% endblock %}

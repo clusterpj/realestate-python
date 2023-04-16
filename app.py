@@ -10,17 +10,12 @@ from werkzeug.security import generate_password_hash
 from flask_login import logout_user
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
+from flask_mail import Mail, Message
+from config import Config
 import os
-UPLOAD_FOLDER = 'static/uploads/'
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-import os
-os.environ['FLASK_ENV'] = 'development'
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads').rstrip(os.sep)
-app.run(debug=True)
+app.config.from_object(Config)
 app.secret_key = "dTLma3M6KkGrDf"
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/cluster_main"
@@ -53,10 +48,9 @@ def load_user(user_id):
         return user
 
 class Listing:
-    def __init__(self, title, image, gallery_images, price, bedrooms, bathrooms, size):
+    def __init__(self, title, image, price, bedrooms, bathrooms, size):
         self.title = title
         self.image = image
-        self.gallery_images = gallery_images
         self.price = price
         self.bedrooms = bedrooms
         self.bathrooms = bathrooms
@@ -66,7 +60,6 @@ class Listing:
         return {
             "title": self.title,
             "image": self.image,
-            "gallery_images": self.gallery_images,
             "price": self.price,
             "bedrooms": self.bedrooms,
             "bathrooms": self.bathrooms,
@@ -106,9 +99,33 @@ def about():
 def news():
     return render_template('news.html', title='Real Estate App')
 
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    return render_template('contact.html', title='Real Estate App')
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+
+        msg = Message(subject='New message from Real Estate App',
+                      recipients=['jisgore@gmail.com'],  # replace with your email address
+                      body=f'Name: {name}\nEmail: {email}\nMessage: {message}')
+
+        mail.send(msg)
+
+        return render_template('success.html')
+
+    return render_template('contact.html')
+
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    name = request.form['name']
+    email = request.form['email']
+    message = request.form['message']
+
+    # Do something with the form data, e.g. send an email
+
+    flash('Your message has been sent!')
+    return redirect(url_for('contact'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -200,7 +217,6 @@ def create_property():
     if request.method == 'POST':
         title = request.form.get('title')
         image = request.files['image']
-        image_gallery = request.files.getlist('image_gallery[]')
         price = request.form.get('price')
         bedrooms = request.form.get('bedrooms')
         bathrooms = request.form.get('bathrooms')
@@ -211,18 +227,10 @@ def create_property():
         image_filename = secure_filename(image.filename)
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
 
-        # Save the image gallery files
-        gallery_filenames = []
-        for gallery_image in image_gallery:
-            gallery_filename = secure_filename(gallery_image.filename)
-            gallery_image.save(os.path.join(app.config['UPLOAD_FOLDER'], gallery_filename))
-            gallery_filenames.append(os.path.join('uploads', gallery_filename))
-
         # Create the new listing
         new_listing = Listing(
             title,
             os.path.join('uploads', image_filename),
-            gallery_filenames,
             float(price),
             int(bedrooms),
             float(bathrooms),
