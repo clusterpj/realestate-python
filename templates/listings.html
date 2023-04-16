@@ -2,12 +2,21 @@
 
 {% block content %}
   <div class="container">
-    <div class="row">
+    <!-- Welcome title and subheading -->
+    <div class="row mt-4">
+      <div class="col text-center">
+        <h2>Welcome to Our Listings</h2>
+        <p class="lead">Discover your dream home today!</p>
+      </div>
+    </div>
+    
+    <!-- Listings -->
+    <div class="row mt-4">
       {% for listing in listings %}
         <!-- Real Estate Listing Card -->
         <div class="col-md-4 col-sm-6 col-xs-12 my-3">
           <div class="card">
-            <img src="{{ listing.image }}" class="card-img-top" alt="{{ listing.title }}">
+            <img src="{{ url_for('static', filename=listing.image|replace('static/', '')) }}" alt="Main image">
             <div class="card-body">
               <h5 class="card-title">{{ listing.title }}</h5>
               <p class="card-text">Price: ${{ listing.price }}</p>
@@ -21,6 +30,15 @@
           </div>
         </div>
       {% endfor %}
+    </div>
+    
+    <!-- Call to action section -->
+    <div class="row mt-5">
+      <div class="col text-center">
+        <h3>Ready to find your perfect home?</h3>
+        <p class="lead">Our team is here to help you every step of the way!</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Contact Us</a>
+      </div>
     </div>
   </div>
 {% endblock %}

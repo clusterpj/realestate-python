@@ -1,3 +1,5 @@
+from flask import Flask
+from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, render_template
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -7,18 +9,30 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from flask_login import logout_user
 from werkzeug.utils import secure_filename
+from bson.objectid import ObjectId
 import os
 UPLOAD_FOLDER = 'static/uploads/'
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-
+import os
+os.environ['FLASK_ENV'] = 'development'
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads').rstrip(os.sep)
+app.run(debug=True)
 app.secret_key = "dTLma3M6KkGrDf"
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/cluster_main"
 mongo = PyMongo(app)
+
+# the toolbar is only enabled in debug mode:
+app.debug = True
+
+# set a 'SECRET_KEY' to enable the Flask session cookies
+app.config['SECRET_KEY'] = 'PC9D2GAZGXwSz6'
+
+toolbar = DebugToolbarExtension(app)
 
 # Set up Flask-Login
 login_manager = LoginManager()
@@ -37,6 +51,27 @@ def load_user(user_id):
     if user_data:
         user = User(user_data)
         return user
+
+class Listing:
+    def __init__(self, title, image, gallery_images, price, bedrooms, bathrooms, size):
+        self.title = title
+        self.image = image
+        self.gallery_images = gallery_images
+        self.price = price
+        self.bedrooms = bedrooms
+        self.bathrooms = bathrooms
+        self.size = size
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "image": self.image,
+            "gallery_images": self.gallery_images,
+            "price": self.price,
+            "bedrooms": self.bedrooms,
+            "bathrooms": self.bathrooms,
+            "size": self.size,
+        }
 
 @app.route('/')
 def home(): 
@@ -131,8 +166,15 @@ def admin_dashboard():
 @app.route('/admin/all_properties')
 @login_required
 def all_properties():
-    # Fetch all properties and render the all_properties page
-    return render_template('admin/all_properties.html')
+    listings = mongo.db.listings.find()
+    return render_template('/admin/all_properties.html', listings=listings)
+
+@app.route('/admin/delete_property/<listing_id>', methods=['POST'])
+@login_required
+def delete_property(listing_id):
+    mongo.db.listings.delete_one({'_id': ObjectId(listing_id)})
+    flash('Property deleted successfully', 'success')
+    return redirect(url_for('all_properties'))
 
 @app.route('/admin/property_types')
 @login_required
@@ -156,37 +198,47 @@ def property_locations():
 @login_required
 def create_property():
     if request.method == 'POST':
-        # Get form data
-        title = request.form['title']
+        title = request.form.get('title')
         image = request.files['image']
-        price = float(request.form['price'])
-        bedrooms = int(request.form['bedrooms'])
-        bathrooms = int(request.form['bathrooms'])
-        size = int(request.form['size'])
+        image_gallery = request.files.getlist('image_gallery[]')
+        price = request.form.get('price')
+        bedrooms = request.form.get('bedrooms')
+        bathrooms = request.form.get('bathrooms')
+        size = request.form.get('size')
 
-        # Save image to a folder (e.g., 'static/uploads/')
+
+        # Save the main image
         image_filename = secure_filename(image.filename)
-        image.save(os.path.join('static/uploads/', image_filename))
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
 
-        # Add the listing to the database
-        mongo.db.listings.insert_one({
-            'title': title,
-            'image': url_for('static', filename='uploads/' + image_filename),
-            'price': price,
-            'bedrooms': bedrooms,
-            'bathrooms': bathrooms,
-            'size': size
-        })
+        # Save the image gallery files
+        gallery_filenames = []
+        for gallery_image in image_gallery:
+            gallery_filename = secure_filename(gallery_image.filename)
+            gallery_image.save(os.path.join(app.config['UPLOAD_FOLDER'], gallery_filename))
+            gallery_filenames.append(os.path.join('uploads', gallery_filename))
 
-        flash('Listing added successfully', 'success')
-        return redirect(url_for('all_properties'))
+        # Create the new listing
+        new_listing = Listing(
+            title,
+            os.path.join('uploads', image_filename),
+            gallery_filenames,
+            float(price),
+            int(bedrooms),
+            float(bathrooms),
+            float(size)
+        )
+
+        # Insert the new listing into the database
+        mongo.db.listings.insert_one(new_listing.to_dict())
+
+        flash('New listing created successfully!', 'success')
+        return redirect(url_for('admin_dashboard'))
 
     return render_template('admin/create_property.html')
 
 def format_number(value):
     return "{:,}".format(value)
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
