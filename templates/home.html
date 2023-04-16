@@ -14,9 +14,34 @@
 
   <!-- Featured listings section -->
   <section class="featured-listings my-5">
-    <h2 class="mb-4">Featured Listings</h2>
     <div class="row">
-      <!-- Add featured listings cards here -->
+      <div class="container">
+        <!-- Featured Properties -->
+        <div class="row mt-4">
+          <div class="col text-center">
+            <h2>Featured Properties</h2>
+          </div>
+        </div>
+        <div class="row mt-4">
+          {% for listing in featured_listings %}
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <img src="{{ url_for('static', filename=listing.image) }}" alt="Main image">
+                <div class="card-body">
+                <h5 class="card-title">{{ listing.title }}</h5>
+                <p class="card-text">{{ listing.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <a href="{{ url_for('property_details', listing_id=listing._id) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                  </div>
+                  <small class="text-muted">${{ listing.price }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </section>
 

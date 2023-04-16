@@ -1,5 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <!-- Your home page content goes here -->
+  <div class="container">
+    <!-- Title -->
+    <div class="row mt-4">
+      <div class="col text-center">
+        <h2>Article Archive</h2>
+        <p class="lead">All articles</p>
+      </div>
+    </div>
+
+    <!-- Article List -->
+    <div class="row mt-4">
+      <div class="col">
+        <ul class="list-group">
+          {% for article in articles %}
+            <li class="list-group-item">
+              <h5>{{ article.title }}</h5>
+              <p>{{ article.date }}</p>
+              <p>{{ article.content }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
 {% endblock %}

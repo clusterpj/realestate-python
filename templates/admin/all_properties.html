@@ -32,6 +32,10 @@
                 <td>{{ listing.bedrooms }}</td>
                 <td>{{ listing.bathrooms }}</td>
                 <td>${{ listing.price }}</td>
+                <td><button class="btn btn-sm btn-outline-primary toggle-featured-btn" data-listing-id="{{ listing._id }}" data-featured="{{ 'true' if listing.featured else 'false' }}">
+                    {{ 'Remove from Featured' if listing.featured else 'Add to Featured' }}
+                  </button>
+                </td>
                 <td>
                   <form action="{{ url_for('delete_property', listing_id=listing._id) }}" method="post">
                     <input type="submit" class="btn btn-danger" value="Delete Property">
@@ -44,4 +48,32 @@
       </div>
     </div>
   </div>
+  {% block extra_js %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+      $('.toggle-featured-btn').click(function() {
+        var listing_id = $(this).data('listing-id');
+        var featured = $(this).data('featured') === 'true';
+    
+        $.ajax({
+          url: '/toggle_featured',
+          method: 'POST',
+          data: { listing_id: listing_id, featured: !featured },
+          success: function(response) {
+            // If the request was successful, toggle the button text and data attributes
+            var btn = $('.toggle-featured-btn[data-listing-id="' + listing_id + '"]');
+            btn.data('featured', !featured);
+            btn.text(response.success ? (featured ? 'Add to Featured' : 'Remove from Featured') : 'Error');
+          },
+          error: function() {
+            // If there was an error, update the button text to indicate an error
+            var btn = $('.toggle-featured-btn[data-listing-id="' + listing_id + '"]');
+            btn.text('Error');
+          }
+        });
+      });
+    });
+    </script>    
+    {% endblock %}
 {% endblock %}

@@ -49,13 +49,14 @@ def load_user(user_id):
         return user
 
 class Listing:
-    def __init__(self, title, image, price, bedrooms, bathrooms, size):
+    def __init__(self, title, image, price, bedrooms, bathrooms, size, featured=False):
         self.title = title
         self.image = image
         self.price = price
         self.bedrooms = bedrooms
         self.bathrooms = bathrooms
         self.size = size
+        self.featured = featured
 
     def to_dict(self):
         return {
@@ -65,11 +66,20 @@ class Listing:
             "bedrooms": self.bedrooms,
             "bathrooms": self.bathrooms,
             "size": self.size,
+            "featured": self.featured
         }
 
 @app.route('/')
-def home(): 
-    return render_template('home.html', title='Real Estate App')
+def home():
+
+    # Get featured listings from database
+    featured_listings = list(mongo.db.listings.find({'featured': True}))
+
+    # Format the price of each featured listing
+    for listing in featured_listings:
+        listing['price'] = '{:,.0f}'.format(int(listing['price']))
+        
+    return render_template('home.html', featured_listings=featured_listings)
 
 @app.route('/listings')
 def listings():
@@ -87,8 +97,8 @@ def listings():
     return render_template('listings.html', listings=listings)
 
 @app.route('/listings/<listing_id>')
-def listing_details(listing_id):
-    # Code to fetch data for a specific listing and render the listing details page
+def property_details(listing_id):
+    # Code to fetch data for a specific listing and render the property details page
     listing = mongo.db.listings.find_one({"_id": ObjectId(listing_id)})
     return render_template('listing_details.html', listing=listing, title='Real Estate App')
 
@@ -172,9 +182,14 @@ def signup():
     return render_template('signup.html', title='Real Estate App')
 
 @app.route('/logout')
+@login_required
 def logout():
+    # Clear flashed messages
+    session.pop('_flashes', None)
+
     logout_user()
-    return redirect(url_for('home'))
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('login'))
 
 @app.route('/admin')
 @login_required
@@ -212,17 +227,28 @@ def property_locations():
     # Fetch all property locations and render the property_locations page
     return render_template('admin/property_locations.html')
 
+@app.route('/toggle_featured', methods=['POST'])
+@login_required
+def toggle_featured():
+    listing_id = request.form.get('listing_id')
+    featured = request.form.get('featured') == 'true'
+    mongo.db.listings.update_one({"_id": ObjectId(listing_id)}, {"$set": {"featured": featured}})
+    return {"success": True}
+
 @app.route('/admin/create_property', methods=['GET', 'POST'])
 @login_required
 def create_property():
     if request.method == 'POST':
+
+        featured = request.form.get('featured') == 'on'
+
+        # Assign the values of the form inputs to variables
         title = request.form.get('title')
-        image = request.files['image']
         price = request.form.get('price')
         bedrooms = request.form.get('bedrooms')
         bathrooms = request.form.get('bathrooms')
         size = request.form.get('size')
-
+        image = request.files['image']
 
         # Save the main image
         image_filename = secure_filename(image.filename).replace('\\', '/')
@@ -235,7 +261,8 @@ def create_property():
             float(price),
             int(bedrooms),
             float(bathrooms),
-            float(size)
+            float(size),
+            featured
         )
 
         # Insert the new listing into the database
@@ -245,6 +272,7 @@ def create_property():
         return redirect(url_for('admin_dashboard'))
 
     return render_template('admin/create_property.html')
+
 
 def format_number(value):
     return "{:,}".format(value)
