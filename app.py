@@ -1,53 +1,37 @@
-from flask import Flask
-from flask_debugtoolbar import DebugToolbarExtension
-from flask import Flask, render_template
-from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
-from werkzeug.security import check_password_hash
-from werkzeug.security import generate_password_hash
-from flask_login import logout_user
-from werkzeug.utils import secure_filename
-from bson.objectid import ObjectId
-from flask_mail import Message
-from config import Config
+# Imports
 import os
-import pdb
+from bson.objectid import ObjectId
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
+from flask_mail import Message
+from flask_pymongo import PyMongo
+from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
+from config import Config
 
+# App Configuration
 app = Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = "dTLma3M6KkGrDf"
-
-app.config["MONGO_URI"] = "mongodb://localhost:27017/cluster_main"
+app.config["MONGO_URI"] = "mongodb+srv://realestateadmin:C0rP0r4lJ1sG0re@clusterstate.ym3x1zp.mongodb.net/clusterestate"
 mongo = PyMongo(app)
-
-# the toolbar is only enabled in debug mode:
 app.debug = True
-
-# set a 'SECRET_KEY' to enable the Flask session cookies
 app.config['SECRET_KEY'] = 'PC9D2GAZGXwSz6'
-
 toolbar = DebugToolbarExtension(app)
 
-# Set up Flask-Login
+# Flask-Login Configuration
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+# User Class
 class User(UserMixin):
     def __init__(self, user_data):
         self.id = str(user_data['_id'])
         self.username = user_data['username']
 
-@login_manager.user_loader
-def load_user(user_id):
-    # Load user from the database or user data store
-    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
-    if user_data:
-        user = User(user_data)
-        return user
-
+# Listing Class
 class Listing:
     def __init__(self, title, image, price, bedrooms, bathrooms, size, featured=False):
         self.title = title
@@ -69,6 +53,19 @@ class Listing:
             "featured": self.featured
         }
 
+# Login Manager User Loader
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    if user_data:
+        user = User(user_data)
+        return user
+
+# Utility Functions
+def format_number(value):
+    return "{:,}".format(value)
+
+# Routes
 @app.route('/')
 def home():
 
@@ -273,9 +270,9 @@ def create_property():
 
     return render_template('admin/create_property.html')
 
-
 def format_number(value):
     return "{:,}".format(value)
 
+# Main Execution
 if __name__ == '__main__':
     app.run(debug=True)
