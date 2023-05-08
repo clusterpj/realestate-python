@@ -1,21 +1,19 @@
 # Imports
 import os
 from bson.objectid import ObjectId
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, logging
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_mail import Message
 from flask_pymongo import PyMongo
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from config import Config
+from config import Config, db
 
 # App Configuration
 app = Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = "dTLma3M6KkGrDf"
-app.config["MONGO_URI"] = "mongodb+srv://realestateadmin:C0rP0r4lJ1sG0re@clusterstate.ym3x1zp.mongodb.net/clusterestate"
-mongo = PyMongo(app)
 app.debug = True
 app.config['SECRET_KEY'] = 'PC9D2GAZGXwSz6'
 toolbar = DebugToolbarExtension(app)
@@ -56,7 +54,7 @@ class Listing:
 # Login Manager User Loader
 @login_manager.user_loader
 def load_user(user_id):
-    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    user_data = db.users.find_one({'_id': ObjectId(user_id)})
     if user_data:
         user = User(user_data)
         return user
@@ -70,7 +68,7 @@ def format_number(value):
 def home():
 
     # Get featured listings from database
-    featured_listings = list(mongo.db.listings.find({'featured': True}))
+    featured_listings = list(db.listings.find({'featured': True}))
 
     # Format the price of each featured listing
     for listing in featured_listings:
@@ -81,7 +79,7 @@ def home():
 @app.route('/listings')
 def listings():
     # Fetch listings from the database
-    listings_cursor = mongo.db.listings.find()
+    listings_cursor = db.listings.find()
 
     # Convert the cursor to a list of dictionaries
     listings = [listing for listing in listings_cursor]
@@ -96,7 +94,7 @@ def listings():
 @app.route('/listings/<listing_id>')
 def property_details(listing_id):
     # Code to fetch data for a specific listing and render the property details page
-    listing = mongo.db.listings.find_one({"_id": ObjectId(listing_id)})
+    listing = db.listings.find_one({"_id": ObjectId(listing_id)})
     return render_template('listing_details.html', listing=listing, title='Real Estate App')
 
 @app.route('/about')
@@ -143,7 +141,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user_data = mongo.db.users.find_one({'username': username})
+        user_data = db.users.find_one({'username': username})
 
         if user_data and check_password_hash(user_data['password'], password):
             user = User(user_data)
@@ -164,13 +162,13 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         # Check if the username already exists
-        existing_user = mongo.db.users.find_one({'username': username})
+        existing_user = db.users.find_one({'username': username})
 
         if existing_user is None:
             # Hash the password
             hashed_password = generate_password_hash(password)
             # Add the new user to the database
-            mongo.db.users.insert_one({'username': username, 'password': hashed_password})
+            db.users.insert_one({'username': username, 'password': hashed_password})
             flash('Account created successfully. Please log in.', 'success')
             return redirect(url_for('login'))
         else:
@@ -196,13 +194,13 @@ def admin_dashboard():
 @app.route('/admin/all_properties')
 @login_required
 def all_properties():
-    listings = mongo.db.listings.find()
+    listings = db.listings.find()
     return render_template('/admin/all_properties.html', listings=listings)
 
 @app.route('/admin/delete_property/<listing_id>', methods=['POST'])
 @login_required
 def delete_property(listing_id):
-    mongo.db.listings.delete_one({'_id': ObjectId(listing_id)})
+    db.listings.delete_one({'_id': ObjectId(listing_id)})
     flash('Property deleted successfully', 'success')
     return redirect(url_for('all_properties'))
 
@@ -229,7 +227,7 @@ def property_locations():
 def toggle_featured():
     listing_id = request.form.get('listing_id')
     featured = request.form.get('featured') == 'true'
-    mongo.db.listings.update_one({"_id": ObjectId(listing_id)}, {"$set": {"featured": featured}})
+    db.listings.update_one({"_id": ObjectId(listing_id)}, {"$set": {"featured": featured}})
     return {"success": True}
 
 @app.route('/admin/create_property', methods=['GET', 'POST'])
@@ -263,7 +261,7 @@ def create_property():
         )
 
         # Insert the new listing into the database
-        mongo.db.listings.insert_one(new_listing.to_dict())
+        db.listings.insert_one(new_listing.to_dict())
 
         flash('New listing created successfully!', 'success')
         return redirect(url_for('admin_dashboard'))
