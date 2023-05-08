@@ -1,5 +1,6 @@
 # Imports
 import os
+from config import Config, db
 from bson.objectid import ObjectId
 from flask import Flask, render_template, request, redirect, url_for, flash, session, logging
 from flask_debugtoolbar import DebugToolbarExtension
@@ -8,7 +9,6 @@ from flask_mail import Message
 from flask_pymongo import PyMongo
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from config import Config, db
 
 # App Configuration
 app = Flask(__name__)

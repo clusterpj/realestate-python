@@ -1,6 +1,3 @@
-{% extends "base.html" %}
-
-{% block content %}
 <div class="container">
     <h1>Add a New Listing</h1>
     <form action="{{ url_for('create_property') }}" method="post" enctype="multipart/form-data">
@@ -36,4 +33,3 @@
     </form>
   </div>
 
-{% endblock %} 

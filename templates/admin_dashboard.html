@@ -8,25 +8,40 @@
                 <a href="#" class="list-group-item list-group-item-action">
                     Dashboard
                 </a>
-                <div class="dropdown">
-                    <a class="list-group-item list-group-item-action dropdown-toggle" href="#" role="button" id="propertiesDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Properties
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="propertiesDropdown">
-                        <a class="dropdown-item" href="{{ url_for('all_properties') }}">All properties</a>
-                        <a class="dropdown-item" href="{{ url_for('property_types') }}">Type</a>
-                        <a class="dropdown-item" href="{{ url_for('property_amenities') }}">Amenities</a>
-                        <a class="dropdown-item" href="{{ url_for('property_locations') }}">Location</a>
-                        <a href="{{ url_for('create_property') }}" class="list-group-item list-group-item-action">Create Property</a>
-
-                    </div>
-                </div>
+                <a href="javascript:void(0)" data-url="{{ url_for('all_properties') }}" class="list-group-item list-group-item-action">All properties</a>
+                <a href="javascript:void(0)" data-url="{{ url_for('property_types') }}" class="list-group-item list-group-item-action">Type</a>
+                <a href="javascript:void(0)" data-url="{{ url_for('property_amenities') }}" class="list-group-item list-group-item-action">Amenities</a>
+                <a href="javascript:void(0)" data-url="{{ url_for('property_locations') }}" class="list-group-item list-group-item-action">Location</a>
+                <a href="javascript:void(0)" data-url="{{ url_for('create_property') }}" class="list-group-item list-group-item-action">Create Property</a>            
             </div>
         </div>
         <div class="col-md-9">
             <h1>Admin Dashboard</h1>
             <p>Welcome to the admin dashboard. Here, you can manage the content and properties of your website.</p>
+            <div id="content-container"></div>
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.list-group-item-action').on('click', function(e) {
+            e.preventDefault();
+
+            // Get the URL from the data-url attribute
+            const url = $(this).data('url');
+
+            console.log('URL:', url); // Add this line for debugging
+
+            if (url) {
+                // Fetch the content and load it into the content container
+                const baseUrl = window.location.protocol + '//' + window.location.host;
+                let contentDiv = $('.col-md-9');
+                contentDiv.load(baseUrl + url, function(response, status, xhr) {
+                    console.log('Load status:', status); // Add this line for debugging
+                });
+            }
+        });
+    });
+</script>
+
 {% endblock %}
